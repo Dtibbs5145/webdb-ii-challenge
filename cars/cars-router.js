@@ -39,5 +39,20 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.delete('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const count = await db('cars').del().where({ id });
+        if (count > 0) {
+            res.status(200).json({ message: 'This car was successfully deleted' });
+        } else {
+            res.status(404).json({ message: 'This car could not be found' });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'There was an error while trying to remove car' });
+    }
+});
+
 
 module.exports = router;
