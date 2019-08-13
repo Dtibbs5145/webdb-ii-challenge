@@ -12,4 +12,32 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const cars = await db('cars').where({ id });
+        if (cars) {
+            res.status(200).json(cars);
+        } else {
+            res.status(404).json({ message: 'That car cannot be found' });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'There was an error finding this car' });
+    }
+});
+
+router.post('/', async (req, res) => {
+    try {
+        const car = req.body;
+        const [id] = await db('cars').insert(car);
+        const newCar = await db('cars').where({ id });
+        res.status(200).json(newCar);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Something went wrong when trying to add car' });
+    }
+});
+
+
 module.exports = router;
